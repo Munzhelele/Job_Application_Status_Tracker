@@ -10,16 +10,127 @@
 </head>
 <body>
 
-<div class="app">
+<!-- ============ AUTH: LOGIN ============ -->
+<section class="auth-shell" id="loginView">
+  <div class="auth-card">
+    <p class="auth-logo">Application Log</p>
+    <h1>Sign in</h1>
+    <p class="auth-sub">Track your job applications in one place.</p>
+
+    <form id="loginForm" novalidate>
+      <div class="field">
+        <label for="login-email">Email</label>
+        <input type="email" id="login-email" required autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" required autocomplete="current-password">
+      </div>
+      <p class="form-error" id="loginError" hidden></p>
+      <button type="submit" class="primary full">Sign in</button>
+    </form>
+
+    <div class="auth-links">
+      <a href="#" id="toForgot">Forgot password?</a>
+      <a href="#" id="toRegister">Create an account</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AUTH: REGISTER ============ -->
+<section class="auth-shell" id="registerView" hidden>
+  <div class="auth-card">
+    <p class="auth-logo">Application Log</p>
+    <h1>Create account</h1>
+    <p class="auth-sub">Set up access for yourself or your team.</p>
+
+    <form id="registerForm" novalidate>
+      <div class="field">
+        <label for="reg-name">Full name</label>
+        <input type="text" id="reg-name" required autocomplete="name">
+      </div>
+      <div class="field">
+        <label for="reg-email">Email</label>
+        <input type="email" id="reg-email" required autocomplete="email">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="reg-password">Password</label>
+          <input type="password" id="reg-password" required autocomplete="new-password">
+        </div>
+        <div class="field">
+          <label for="reg-confirm">Confirm password</label>
+          <input type="password" id="reg-confirm" required autocomplete="new-password">
+        </div>
+      </div>
+      <div class="field">
+        <label for="reg-role">Role</label>
+        <select id="reg-role">
+          <option value="Member">Member — manage my own applications</option>
+          <option value="Admin">Admin — also manage team access</option>
+        </select>
+      </div>
+      <p class="form-error" id="registerError" hidden></p>
+      <button type="submit" class="primary full">Create account</button>
+    </form>
+
+    <div class="auth-links">
+      <a href="#" id="toLoginFromRegister">Already have an account? Sign in</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AUTH: FORGOT PASSWORD ============ -->
+<section class="auth-shell" id="forgotView" hidden>
+  <div class="auth-card">
+    <p class="auth-logo">Application Log</p>
+    <h1>Reset password</h1>
+    <p class="auth-sub">Enter your email and we'll send a reset link.</p>
+
+    <form id="forgotForm" novalidate>
+      <div class="field">
+        <label for="forgot-email">Email</label>
+        <input type="email" id="forgot-email" required autocomplete="email">
+      </div>
+      <p class="form-note" id="forgotNote" hidden>If an account exists for that email, a reset link is on its way.</p>
+      <button type="submit" class="primary full">Send reset link</button>
+    </form>
+
+    <div class="auth-links">
+      <a href="#" id="toLoginFromForgot">Back to sign in</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MAIN APP ============ -->
+<div class="app" id="appView" hidden>
   <header class="topbar">
     <div class="title-block">
       <h1>Application Log</h1>
       <div class="stats" id="stats"></div>
     </div>
-    <button class="primary" id="addBtn">+ Add application</button>
+
+    <div class="topbar-right">
+      <button class="primary" id="addBtn">+ Add application</button>
+      <div class="user-menu">
+        <button class="user-chip" id="userChipBtn">
+          <span class="user-name" id="userName">—</span>
+          <span class="role-badge" id="userRole">—</span>
+        </button>
+        <div class="user-dropdown" id="userDropdown" hidden>
+          <button id="logoutBtn">Sign out</button>
+        </div>
+      </div>
+    </div>
   </header>
 
-  <div class="layout">
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="applications">Applications</button>
+    <button class="tab" data-tab="team" id="teamTab" hidden>Team &amp; roles</button>
+  </nav>
+
+  <!-- ---- Applications tab ---- -->
+  <div class="layout" id="applicationsTab">
     <aside class="sidebar">
       <div class="search">
         <input type="text" id="searchInput" placeholder="Search company or role…">
@@ -29,11 +140,37 @@
     </aside>
 
     <main class="detail" id="detail">
-      <div class="detail-empty">Select an application on the left, or add a new one to start tracking it here.</div>
+      <div class="detail-empty">
+        <p class="serif empty-title">No applications yet</p>
+        <p>Add the first job you've applied to, and it'll show up here.</p>
+      </div>
+    </main>
+  </div>
+
+  <!-- ---- Team & roles tab (admin only) ---- -->
+  <div class="layout single" id="teamTabContent" hidden>
+    <main class="detail">
+      <section class="block">
+        <h3>Invite a teammate</h3>
+        <form id="inviteForm" class="invite-form" novalidate>
+          <input type="email" id="invite-email" placeholder="name@company.com" required>
+          <select id="invite-role">
+            <option value="Member">Member</option>
+            <option value="Admin">Admin</option>
+          </select>
+          <button type="submit" class="primary">Invite</button>
+        </form>
+      </section>
+
+      <section class="block">
+        <h3>People with access</h3>
+        <div id="userTableWrap"></div>
+      </section>
     </main>
   </div>
 </div>
 
+<!-- ============ MODAL: ADD APPLICATION ============ -->
 <div class="overlay" id="overlay">
   <div class="modal">
     <h2>Add application</h2>
@@ -72,6 +209,7 @@
   </div>
 </div>
 
-<script src="app.js"></script>
+<script src="Auth.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
