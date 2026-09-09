@@ -1,11 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Application Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    
+
+<div class="app">
+  <header class="topbar">
+    <div class="title-block">
+      <h1>Application Log</h1>
+      <div class="stats" id="stats"></div>
+    </div>
+    <button class="primary" id="addBtn">+ Add application</button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="search">
+        <input type="text" id="searchInput" placeholder="Search company or role…">
+      </div>
+      <div class="filters" id="filters"></div>
+      <ul class="job-list" id="jobList"></ul>
+    </aside>
+
+    <main class="detail" id="detail">
+      <div class="detail-empty">Select an application on the left, or add a new one to start tracking it here.</div>
+    </main>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2>Add application</h2>
+    <div class="field-row">
+      <div class="field">
+        <label for="f-company">Company</label>
+        <input type="text" id="f-company" placeholder="Acme Corp">
+      </div>
+      <div class="field">
+        <label for="f-role">Role</label>
+        <input type="text" id="f-role" placeholder="Senior Backend Engineer">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="f-location">Location</label>
+        <input type="text" id="f-location" placeholder="Remote / City">
+      </div>
+      <div class="field">
+        <label for="f-date">Date applied</label>
+        <input type="date" id="f-date">
+      </div>
+    </div>
+    <div class="field">
+      <label for="f-url">Original job posting URL</label>
+      <input type="text" id="f-url" placeholder="https://…">
+    </div>
+    <div class="field">
+      <label for="f-skills">Skills listed (comma separated)</label>
+      <input type="text" id="f-skills" placeholder="Python, AWS, Kubernetes">
+    </div>
+    <div class="modal-actions">
+      <button class="secondary" id="cancelBtn">Cancel</button>
+      <button class="primary" id="saveBtn">Save application</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
